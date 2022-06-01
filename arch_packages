@@ -1,0 +1,11 @@
+xorg
+xorg-xinit
+make
+gcc
+libx11
+curl
+r
+nodejs-lts-gallium
+ttf-fira-code
+alacritty
+kitty

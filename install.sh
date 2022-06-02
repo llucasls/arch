@@ -7,6 +7,8 @@ fi
 
 DEVICE=/dev/sda
 
+# synchronize system time
 timedatectl set-ntp true
 
+# partition the disk
 sfdisk "${DEVICE}" < tables/partition_table.dump

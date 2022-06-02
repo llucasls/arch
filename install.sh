@@ -8,3 +8,5 @@ fi
 DEVICE=/dev/sda
 
 timedatectl set-ntp true
+
+sfdisk "${DEVICE}" < tables/partition_table.dump

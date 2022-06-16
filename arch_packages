@@ -27,3 +27,8 @@ pamixer
 alsa-utils
 docker
 docker-compose
+zathura
+zathura-pdf-poppler
+xorg-xclipboard
+xclip
+ttf-dejavu

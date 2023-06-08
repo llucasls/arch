@@ -1,8 +1,9 @@
 #!/bin/bash
 
-eval " $(cat /etc/os-release)"
-if [ "$NAME" != "Arch Linux" ]; then
-    echo "Error: current distribution is not Arch Linux" > /dev/stderr
+source /etc/os-release
+if [ "${ID}" != "arch" ]; then
+    echo "Error: current distribution is not Arch Linux" >&2
+    exit 1
 fi
 
 DEVICE=/dev/sda

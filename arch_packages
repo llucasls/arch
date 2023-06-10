@@ -1,12 +1,10 @@
-xorg
 xorg-xinit
 make
 gcc
 libx11
 curl
 r
-nodejs-lts-gallium
-ttf-fira-code
+nodejs-lts-hydrogen
 alacritty
 kitty
 man-db
@@ -14,14 +12,12 @@ openssh
 neofetch
 imagemagick
 xdotool
-sddm
+xorg-xdm
 picom
 nitrogen
 acpi
-go
 starship
 powerline-fonts
-ttf-joypixels
 pulsemixer
 pamixer
 alsa-utils
@@ -31,4 +27,6 @@ zathura
 zathura-pdf-poppler
 xorg-xclipboard
 xclip
-ttf-dejavu
+xorg-xsetroot
+xorg-server xorg-setxkbmap xorg-xauth
+xterm

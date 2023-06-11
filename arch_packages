@@ -4,6 +4,7 @@ gcc
 libx11
 curl
 r
+rust
 nodejs-lts-hydrogen
 alacritty
 kitty
@@ -35,3 +36,8 @@ xterm
 neovim
 fish
 rsync
+numlockx
+opendoas
+vi
+gvim
+neovim

@@ -1,12 +1,11 @@
-label: gpt
-label-id: 5A6C51FC-1F1C-4704-89BF-7144DD94B2EB
+label: dos
+label-id: 0xb396d287
 device: /dev/sda
 unit: sectors
-first-lba: 2048
-last-lba: 1953525134
 sector-size: 512
 
-/dev/sda1 : start=        2048, size=     1048576, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B, uuid=6C8DCA94-0AC6-4D6B-A66D-8B35796C353E
-/dev/sda2 : start=     1050624, size=   172513280, type=0FC63DAF-8483-4772-8E79-3D69D8477DE4, uuid=7E91E682-6B58-40A6-8B06-9D9C02862546
-/dev/sda3 : start=   173563904, size=  1744310758, type=933AC7E1-2EB4-4F13-B844-0E14E2AEF915, uuid=2D554B5B-BB19-46F8-A88D-F1C2D53C043B
-/dev/sda4 : start=  1917876224, size=    25165825, type=0657FD6D-A4AB-43C4-84E5-0933C84B4F4F, uuid=57F30305-5CC9-49AB-B76D-26EE5037311C
+/dev/sda1 : start=        2048, size=     1048576, type=83
+/dev/sda2 : start=     1050624, size=   167772160, type=83
+/dev/sda3 : start=   168822784, size=  1784702384, type=5
+/dev/sda5 : start=   168824832, size=  1759535104, type=83
+/dev/sda6 : start=  1928361984, size=    25163184, type=82

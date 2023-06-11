@@ -28,5 +28,10 @@ zathura-pdf-poppler
 xorg-xclipboard
 xclip
 xorg-xsetroot
-xorg-server xorg-setxkbmap xorg-xauth
+xorg-server
+xorg-setxkbmap
+xorg-xauth
 xterm
+neovim
+fish
+rsync

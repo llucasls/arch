@@ -6,7 +6,6 @@ curl
 r
 rust
 nodejs-lts-hydrogen
-alacritty
 kitty
 man-db
 openssh
@@ -15,18 +14,11 @@ imagemagick
 xdotool
 xorg-xdm
 picom
-nitrogen
 acpi
-starship
-powerline-fonts
-pulsemixer
-pamixer
 alsa-utils
 docker
 docker-compose
 zathura
-zathura-pdf-poppler
-xorg-xclipboard
 xclip
 xorg-xsetroot
 xorg-server
@@ -36,7 +28,6 @@ xterm
 neovim
 fish
 rsync
-numlockx
 opendoas
 vi
 gvim

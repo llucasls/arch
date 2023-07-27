@@ -14,6 +14,7 @@ neofetch
 imagemagick
 xdotool
 picom
+maim
 dunst
 acpi
 alsa-utils
@@ -34,19 +35,16 @@ vi
 gvim
 neovim
 
-lightdm
-lightdm-runit
-
 github-cli
 pcmanfm-qt
 emacs
-lightdm-gtk-greeter
 steam
 wine
 keepassxc
 firefox
 feh
 python
+python-pip
 cmake
 git
 fontforge
@@ -54,3 +52,8 @@ discord
 editorconfig-core-c
 cronie
 cronie-runit
+ntp
+ntp-runit
+yt-dlp
+pandoc-bin
+glibc-runit

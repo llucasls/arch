@@ -57,3 +57,5 @@ ntp-runit
 yt-dlp
 pandoc-bin
 glibc-runit
+calcurse
+check

@@ -39,3 +39,9 @@ git clone https://github.com/llucasls/tabbed.git ${REPOS_DIR}/tabbed
 make --file=${REPOS_DIR}/tabbed/Makefile install clean
 
 chown -R ${USER}:${USER} ${HOME}
+
+if type sudo > /dev/null 2>&1; then
+	sudo -u ${USER} ./install_pipx.py
+elif type doas > /dev/null 2>&1; then
+	doas -u ${USER} ./install_pipx.py
+fi

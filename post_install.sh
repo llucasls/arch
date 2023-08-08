@@ -1,11 +1,26 @@
 #!/bin/bash
 
+if test $(id -u) -ne 0; then
+	printf "PermissionError: this script must be run as root" >&2
+	exit 10
+fi
+
 PACKAGES=$(< arch_packages)
 FONTS=$(< arch_fonts)
 
 pacman -S ${PACKAGES} ${FONTS}
 
-USER=lucas
+if test -n $1; then
+	USER=$1
+elif test -n "${SUDO_USER}"; then
+	USER=${SUDO_USER}
+elif test -n "${DOAS_USER}"; then
+	USER=${DOAS_USER}
+else
+	printf "Error: username not provided" >&2
+	exit 1
+fi
+
 HOME=/home/${USER}
 REPOS_DIR=${HOME}/.repos
 

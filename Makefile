@@ -5,7 +5,7 @@ OUTPUT_FILES = $(patsubst %.sh,$(BIN_DIR)/%,$(SCRIPTS))
 
 all: $(OUTPUT_FILES)
 
-$(BIN_DIR)/%: $(CURDIR)/%.sh
+$(OUTPUT_FILES): $(BIN_DIR)/%: $(CURDIR)/%.sh
 	link $< $@
 
 clean:

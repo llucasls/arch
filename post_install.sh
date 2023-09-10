@@ -1,47 +1,106 @@
 #!/bin/bash
 
-if test $(id -u) -ne 0; then
-	printf "PermissionError: this script must be run as root" >&2
-	exit 10
-fi
+OPTERR=0
 
-PACKAGES=$(< arch_packages)
-FONTS=$(< arch_fonts)
+TARGET_USER=
+TARGET_HOME=
+REPOS_DIR=
 
-pacman -S ${PACKAGES} ${FONTS}
+help_msg=$(cat <<EOF
+post_install.sh - set up your desktop after a fresh Artix install
 
-if test -n $1; then
-	USER=$1
-elif test -n "${SUDO_USER}"; then
-	USER=${SUDO_USER}
-elif test -n "${DOAS_USER}"; then
-	USER=${DOAS_USER}
-else
-	printf "Error: username not provided" >&2
-	exit 1
-fi
+# ./post_install.sh -u USER [-d HOME_DIR] [-r REPOS_DIR]
+$ doas ./post_install.sh [-u USER] [-d HOME_DIR] [-r REPOS_DIR]
+$ sudo ./post_install.sh [-u USER] [-d HOME_DIR] [-r REPOS_DIR]
+$ ./post_install.sh -h
 
-HOME=/home/${USER}
-REPOS_DIR=${HOME}/.repos
+Description:
+    In the first form, the script is run directly as root. It requires the
+    username to be passed using the -u option. In the second and third forms,
+    the username is taken from DOAS_USER and SUDO_USER, respectively. In all of
+    them, you can optionally pass a home directory and a repos directory.
+    The fourth form shows this help message.
+EOF
+)
 
-mkdir -p ${REPOS_DIR}
+validate_user() {
+	if test "$(id -u)" -ne 0; then
+		printf "Error: this script must be run as root\n" >&2
+		exit 10
+	fi
+}
 
-git clone https://github.com/llucasls/dwm.git ${REPOS_DIR}/dwm
-make --file=${REPOS_DIR}/dwm/Makefile install clean
+install_packages() {
+	PACKAGES="$(< arch_packages)"
+	FONTS="$(< arch_fonts)"
 
-git clone https://github.com/llucasls/dmenu.git ${REPOS_DIR}/dmenu
-make --file=${REPOS_DIR}/dmenu/Makefile install clean
+	pacman -S ${PACKAGES} ${FONTS}
+}
 
-git clone https://github.com/llucasls/st.git ${REPOS_DIR}/st
-make --file=${REPOS_DIR}/st/Makefile install clean
+install_suckless() {
+	git clone https://github.com/llucasls/$2.git "$1/$2"
+	make --file="$1/$2/Makefile" install clean
+}
 
-git clone https://github.com/llucasls/tabbed.git ${REPOS_DIR}/tabbed
-make --file=${REPOS_DIR}/tabbed/Makefile install clean
+show_help() {
+	printf '%s\n' "${help_msg}"
+}
 
-chown -R ${USER}:${USER} ${HOME}
+set_variables() {
+	while getopts 'u:d:r:h' option; do
+		case ${option} in
+			u)
+				TARGET_USER="${OPTARG}"
+				;;
+			d)
+				TARGET_HOME="${OPTARG}"
+				;;
+			r)
+				REPOS_DIR="${OPTARG}"
+				;;
+			h)
+				show_help
+				exit 0
+				;;
+			?)
+				show_help
+				exit 1
+				;;
+		esac
+	done
 
-if type sudo > /dev/null 2>&1; then
-	sudo -u ${USER} ./install_pipx.py
-elif type doas > /dev/null 2>&1; then
-	doas -u ${USER} ./install_pipx.py
-fi
+	if test -z "${TARGET_USER}" -a -n "${DOAS_USER}"; then
+		TARGET_USER="${DOAS_USER}"
+	elif test -z "${TARGET_USER}" -a -n "${SUDO_USER}"; then
+		TARGET_USER="${SUDO_USER}"
+	elif test -z "${TARGET_USER}"; then
+		printf "Error: username not provided\n" >&2
+		exit 1
+	fi
+
+	if test -z "${TARGET_HOME}"; then
+		TARGET_HOME="/home/${TARGET_USER}"
+	fi
+
+	if test -z "${REPOS_DIR}"; then
+		REPOS_DIR="${TARGET_HOME}/.repos"
+	fi
+}
+
+main() {
+	validate_user
+
+	install_packages
+
+	install -o "${TARGET_USER}" -g "${TARGET_USER}" -d "${REPOS_DIR}"
+
+	install_suckless "${REPOS_DIR}" dwm
+	install_suckless "${REPOS_DIR}" dmenu
+	install_suckless "${REPOS_DIR}" st
+	install_suckless "${REPOS_DIR}" tabbed
+
+	runuser -u "${TARGET_USER}" ./install_pipx.py
+}
+
+set_variables $@
+main

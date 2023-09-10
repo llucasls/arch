@@ -3,6 +3,7 @@ make
 gcc
 libx11
 curl
+tree
 r
 rust
 nodejs-lts-hydrogen
@@ -12,6 +13,7 @@ man-db
 openssh
 neofetch
 imagemagick
+gimp
 xdotool
 picom
 maim
@@ -21,6 +23,12 @@ alsa-utils
 docker
 docker-compose
 docker-runit
+mariadb
+mariadb-runit
+mariadb-libs
+mariadb-clients
+sqlite
+sqlite-doc
 zathura
 zathura-pdf-mupdf
 xclip
@@ -34,7 +42,6 @@ opendoas
 vi
 gvim
 neovim
-
 github-cli
 pcmanfm-qt
 emacs
@@ -44,11 +51,9 @@ keepassxc
 firefox
 feh
 python
-python-pip
 cmake
 git
 fontforge
-discord
 editorconfig-core-c
 cronie
 cronie-runit

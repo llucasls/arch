@@ -1,2 +1,2 @@
 #!/bin/sh
-doas -n runit-init 0
+exec doas -n init 0

@@ -1,2 +1,2 @@
 #!/bin/sh
-doas -n runit-init 6
+exec doas -n init 6

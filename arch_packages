@@ -44,7 +44,8 @@ gvim
 neovim
 github-cli
 pcmanfm-qt
-emacs
+emacs-nativecomp
+libgccjit
 steam
 wine
 keepassxc

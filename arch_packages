@@ -58,6 +58,7 @@ fontforge
 editorconfig-core-c
 cronie
 cronie-runit
+timeshift
 ntp
 ntp-runit
 yt-dlp
@@ -66,3 +67,4 @@ glibc-runit
 calcurse
 check
 libreoffice-fresh
+os-prober

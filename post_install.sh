@@ -2,9 +2,9 @@
 
 OPTERR=0
 
-TARGET_USER=
-TARGET_HOME=
-REPOS_DIR=
+user=
+home=
+repos=
 
 help_msg=$(cat <<EOF
 post_install.sh - set up your desktop after a fresh Artix install
@@ -25,21 +25,62 @@ EOF
 
 validate_user() {
 	if test "$(id -u)" -ne 0; then
-		printf "Error: this script must be run as root\n" >&2
+		printf 'Error: this script must be run as root\n' >&2
 		exit 10
 	fi
 }
 
 install_packages() {
-	PACKAGES="$(< arch_packages)"
-	FONTS="$(< arch_fonts)"
+	local PACKAGES="$(< artix_packages)"
+	local FONTS="$(< arch_fonts)"
+	local MATE="$(< mate_packages)"
 
-	pacman -S ${PACKAGES} ${FONTS}
+	printf '\n%s\n%s\n' '[lib32]' 'Include = /etc/pacman.d/mirrorlist' \
+		>> /etc/pacman.conf
+
+	pacman -Sy ${PACKAGES} ${FONTS}
+}
+
+install_rust_packages() {
+	local PACKAGES="$(< cargo_packages)"
+
+	runuser -u "${user}" cargo install ${PACKAGES}
 }
 
 install_suckless() {
-	git clone https://github.com/llucasls/$2.git "$1/$2"
-	make --file="$1/$2/Makefile" install clean
+	if test ! -d "$1/$2"; then
+		runuser -u "${user}" git clone git@github.com:llucasls/$2.git "$1/$2"
+		make --directory="$1/$2" install clean
+	fi
+}
+
+setup_configs() {
+	runuser -u "${user}" mkdir -p "${home}/.config"
+	cd "${home}/.config"
+	runuser -u "${user}" git init
+	runuser -u "${user}" git remote add origin https://github.com/llucasls/dotfiles.git
+	runuser -u "${user}" git pull origin arch
+	chsh -s "$(which fish)" "${user}"
+	cd -
+}
+
+setup_environment() {
+	runuser -u "${user}" fish -c "set -Ux XDG_CONFIG_HOME $home/.config"
+	runuser -u "${user}" fish -c "set -Ux XDG_DATA_HOME $home/.local/share"
+	runuser -u "${user}" fish -c "set -Ux XDG_STATE_HOME $home/.local/state"
+	runuser -u "${user}" fish -c "set -Ux XDG_CACHE_HOME $home/.cache"
+}
+
+setup_path() {
+	runuser -u "${user}" mkdir -p "${home}/.bin" "${home}/.local/bin" \
+		"${home}/.cargo/bin" "${home}/.yarn/bin"
+	runuser -u "${user}" fish -c \
+		"fish_add_path -Up $home/.bin $home/.local/bin \
+		$home/.cargo/bin $home/.yarn/bin"
+}
+
+setup_scripts() {
+	true
 }
 
 show_help() {
@@ -50,13 +91,13 @@ set_variables() {
 	while getopts 'u:d:r:h' option; do
 		case ${option} in
 			u)
-				TARGET_USER="${OPTARG}"
+				user="${OPTARG}"
 				;;
 			d)
-				TARGET_HOME="${OPTARG}"
+				home="${OPTARG}"
 				;;
 			r)
-				REPOS_DIR="${OPTARG}"
+				repos="${OPTARG}"
 				;;
 			h)
 				show_help
@@ -69,21 +110,21 @@ set_variables() {
 		esac
 	done
 
-	if test -z "${TARGET_USER}" -a -n "${DOAS_USER}"; then
-		TARGET_USER="${DOAS_USER}"
-	elif test -z "${TARGET_USER}" -a -n "${SUDO_USER}"; then
-		TARGET_USER="${SUDO_USER}"
-	elif test -z "${TARGET_USER}"; then
-		printf "Error: username not provided\n" >&2
+	if test -z "${user}" -a -n "${DOAS_USER}"; then
+		user="${DOAS_USER}"
+	elif test -z "${user}" -a -n "${SUDO_USER}"; then
+		user="${SUDO_USER}"
+	elif test -z "${user}"; then
+		printf 'Error: username not provided\n' >&2
 		exit 1
 	fi
 
-	if test -z "${TARGET_HOME}"; then
-		TARGET_HOME="/home/${TARGET_USER}"
+	if test -z "${home}"; then
+		home="/home/${user}"
 	fi
 
-	if test -z "${REPOS_DIR}"; then
-		REPOS_DIR="${TARGET_HOME}/.repos"
+	if test -z "${repos}"; then
+		repos="${home}/.repos"
 	fi
 }
 
@@ -91,15 +132,20 @@ main() {
 	validate_user
 
 	install_packages
+	install_rust_packages
 
-	install -o "${TARGET_USER}" -g "${TARGET_USER}" -d "${REPOS_DIR}"
+	install -o "${user}" -g "${user}" -d "${repos}"
 
-	install_suckless "${REPOS_DIR}" dwm
-	install_suckless "${REPOS_DIR}" dmenu
-	install_suckless "${REPOS_DIR}" st
-	install_suckless "${REPOS_DIR}" tabbed
+	install_suckless "${repos}" dwm
+	install_suckless "${repos}" dmenu
+	install_suckless "${repos}" st
+	install_suckless "${repos}" tabbed
 
-	runuser -u "${TARGET_USER}" ./install_pipx.py
+	runuser -u "${user}" ./install_pipx.py
+
+	setup_configs
+	setup_environment
+	setup_path
 }
 
 set_variables $@

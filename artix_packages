@@ -30,6 +30,7 @@ libx11
 maim
 make
 man-db
+man-pages
 mariadb
 mariadb-clients
 mariadb-libs
@@ -43,7 +44,6 @@ opendoas
 openssh
 os-prober
 pandoc-bin
-pcmanfm-qt
 picom
 python
 r
@@ -71,3 +71,8 @@ fuse-common
 fuse2
 fuse3
 mpv
+dash
+connman
+connman-runit
+wpa_supplicant
+wpa_supplicant-runit
